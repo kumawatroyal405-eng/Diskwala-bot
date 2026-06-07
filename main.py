@@ -8,7 +8,13 @@ api_id = int(os.getenv("API_ID"))
 api_hash = os.getenv("API_HASH")
 bot_token = os.getenv("BOT_TOKEN")
 
-# Links to send
+# Telegram Client
+client = TelegramClient("bot", api_id, api_hash)
+
+# FastAPI App
+app = FastAPI()
+
+# Links
 links = [
     "https://diskwala.link/abc123",
     "https://diskwala.link/xyz456"
@@ -17,26 +23,12 @@ links = [
 ad_text = "🔥 Want full access to all premium videos? Buy now!"
 ad_button_url = "https://t.me/diskwalabot?start=premium"
 
-# Telegram client
-client = TelegramClient("bot", api_id, api_hash)
-
-# FastAPI app
-app = FastAPI()
-
 
 @app.get("/")
 async def home():
     return {"status": "Bot Running"}
 
 
-# Start bot when server starts
-@app.on_event("startup")
-async def startup_event():
-    await client.start(bot_token=bot_token)
-    print("Bot Started")
-
-
-# /start command
 @client.on(events.NewMessage(pattern=r"^/start"))
 async def start_handler(event):
     msg_text = "\n".join(links) + "\n\n" + ad_text
@@ -50,3 +42,9 @@ async def start_handler(event):
 
     await asyncio.sleep(1800)
     await msg.delete()
+
+
+@app.on_event("startup")
+async def startup_event():
+    await client.start(bot_token=bot_token)
+    print("Bot Started")
