@@ -16,9 +16,9 @@ links = [
 ad_text = "🔥 Want full access to all premium videos? Buy now!"
 ad_button_url = "https://t.me/diskwalabot?start=premium"
 
-client = TelegramClient('bot', api_id, api_hash).start(bot_token=bot_token)
+client = TelegramClient('bot', api_id, api_hash)
 
-@client.on(events.NewMessage(pattern='/start'))
+@client.on(events.NewMessage(pattern=r"^/start"))
 async def start_handler(event):
     msg_text = "\n".join(links) + "\n\n" + ad_text
 
@@ -37,7 +37,7 @@ def home():
     return {"status": "Bot Running"}
 
 async def bot_main():
-    await client.start()
+    await client.start(bot_token=bot_token)
     await client.run_until_disconnected()
 
 @app.on_event("startup")
