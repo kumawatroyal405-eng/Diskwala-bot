@@ -40,7 +40,10 @@ async def bot_main():
     await client.start()
     await client.run_until_disconnected()
 
+@app.on_event("startup")
+async def startup_event():
+    asyncio.create_task(bot_main())
+
 if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
-    loop.create_task(bot_main())
     uvicorn.run(app, host="0.0.0.0", port=8080)
+
